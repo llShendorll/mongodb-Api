@@ -8,7 +8,7 @@ router.get('/:id', envelope.getPackage);
 
 router.post('/', envelope.addPackages);
 
-router.put('/:id', envelope.editPackage);
+router.post('/:id', envelope.editPackage);
 
 router.delete('/:id', envelope.deletedPackage);
 

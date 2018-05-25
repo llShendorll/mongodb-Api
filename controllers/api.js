@@ -1,21 +1,18 @@
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 const url = "mongodb://localhost:27017";
+const dbName = 'mydb';
+const docName = 'materials';
 
-/**
- * Получение всех полей
- * @param req
- * @param res
- */
 module.exports.getPackages = (req, res) => {
     MongoClient.connect(url, (err, client) => {
-        let db = client.db('mydb');
+        let db = client.db(dbName);
 
         if (err) {
             return res.status(400).json({ err: err.message });
         }
         db
-            .collection('docs')
+            .collection(docName)
             .find()
             .toArray((err, results) => {
                 if (err) {
@@ -27,11 +24,6 @@ module.exports.getPackages = (req, res) => {
     });
 };
 
-/**
- * Получение одного полей по ID
- * @param req
- * @param res
- */
 module.exports.getPackage = (req, res) => {
     try {
         var id = new ObjectID(req.params.id);
@@ -40,13 +32,13 @@ module.exports.getPackage = (req, res) => {
     }
 
     MongoClient.connect(url, (err, client) => {
-        let db = client.db('mydb');
+        let db = client.db(dbName);
 
         if (err) {
             return res.status(400).json({ err: err.message });
         }
         db
-            .collection('docs')
+            .collection(docName)
             .find({ _id: id })
             .toArray((err, results) => {
                 if (err) {
@@ -62,17 +54,12 @@ module.exports.getPackage = (req, res) => {
     });
 };
 
-/**
- * Добавление полей
- * @param req
- * @param res
- */
 module.exports.addPackages = (req, res) => {
 
     MongoClient.connect(url, (err, client) => {
-        let db = client.db('mydb');
+        let db = client.db(dbName);
 
-        db.collection('docs').insert(req.body, (err, result) => {
+        db.collection(docName).insert(req.body, (err, result) => {
             if (err) {
                 res.send({ 'error': 'An error has occurred' });
                 console.log(req.body);
@@ -85,11 +72,6 @@ module.exports.addPackages = (req, res) => {
 
 };
 
-/**
- * Редактирование полей по ID
- * @param req
- * @param res
- */
 module.exports.editPackage = (req, res) => {
     try {
         var id = new ObjectID(req.params.id);
@@ -98,13 +80,13 @@ module.exports.editPackage = (req, res) => {
     }
 
     MongoClient.connect(url, (err, client) => {
-        let db = client.db('mydb');
+        let db = client.db(dbName);
 
         if (err) {
             return res.status(400).json({ err: err.message });
         }
 
-        db.collection('docs').findOneAndUpdate(
+        db.collection(docName).findOneAndUpdate(
             {
                 _id: id
             },
@@ -125,11 +107,6 @@ module.exports.editPackage = (req, res) => {
     });
 };
 
-/**
- * Удаление полей по ID
- * @param req
- * @param res
- */
 module.exports.deletedPackage = (req, res) => {
 
     try {
@@ -139,11 +116,11 @@ module.exports.deletedPackage = (req, res) => {
     }
 
     MongoClient.connect(url, (err, client) => {
-        let db = client.db('mydb');
+        let db = client.db(dbName);
         if (err) {
             return res.status(400).json({ err: err.message });
         }
-        db.collection('docs').deleteOne(
+        db.collection(docName).deleteOne(
             {
                 _id: id
             },
