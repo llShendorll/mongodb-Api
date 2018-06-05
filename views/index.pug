@@ -1,5 +1,27 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+    h1="ЦУП"
+    p Начало положено
+    table.table
+        colgroup
+            col(width='20%')
+            col(width='25%')
+            col(width='33%')
+        thead
+            tr
+                th Название
+                th Аудио
+                th Примечания
+        tbody
+            each content in contents
+                tr
+
+                    td= content.title
+                    td
+                        audio(controls='')
+                            source(src= content.files[0], type='audio/ogg; codecs=vorbis')
+                            source(src= audio, type='audio/mpeg')
+                            |     Тег audio не поддерживается вашим браузером.
+                        //each audio in content.files
+                    td= content.notes

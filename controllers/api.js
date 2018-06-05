@@ -1,8 +1,8 @@
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 const url = "mongodb://localhost:27017";
-const dbName = 'mydb';
-const docName = 'materials';
+const dbName = 'demostand1';
+const docName = 'posts';
 
 module.exports.getPackages = (req, res) => {
     MongoClient.connect(url, (err, client) => {
