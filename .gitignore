@@ -3,5 +3,5 @@ app/node_modules
 app/.vagrant
 data/*
 !data/readme.txt
-data/logs/*
-!data/logs/readme.txt
+logs/*
+!logs/readme.txt
