@@ -29,19 +29,18 @@ Vagrant.configure("2") do |config|
     apt-get install -y curl nano
     curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
     apt-get install -y nodejs build-essential
-    apt-get install -y mongodb
 
-    /etc/init.d/mongodb stop
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+    echo "deb http://repo.mongodb.org/apt/debian jessie/mongodb-org/3.6 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+    apt-get install -y mongodb-org
+
+    sudo service mongod stop
     mv /etc/mongodb.conf /etc/mongodb.conf.bak
     cp /vagrant/mongodb.conf /etc/mongodb.conf
-
-    mkdir /storage/mongodb
-
-    # TODO права не применяются почему-то
-    # TODO надо как-то по другому, может быть из настроек synced_folder
+    mkdir /storage
     chown -R mongodb:mongodb /storage
     chown -R mongodb:mongodb /logs
-    /etc/init.d/mongodb start
+    sudo service mongod start
 
     cd /vagrant
     npm install -g nodemon
