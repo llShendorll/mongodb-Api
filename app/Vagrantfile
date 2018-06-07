@@ -1,0 +1,49 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "generic/debian8"
+  config.vm.box_check_update = false
+
+  # Пробрасываем порты для доступа из вне (с хост машины)
+  config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
+  config.vm.network "forwarded_port", guest: 3000, host: 3000, auto_correct: true
+  config.vm.network "forwarded_port", guest: 27017, host: 28017, auto_correct: true
+  config.vm.network "forwarded_port", guest: 27018, host: 28018, auto_correct: true
+
+  # Rsync для работы с файлами
+  config.vm.synced_folder ".", "/vagrant", {:mount_options => ['dmode=777','fmode=777']}
+  #config.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".vagrant/"
+
+  # Используем отдельную папку для БД, чтобы данные не пропадали между
+  # перезагрузками виртуалки. Данные будут храниться в папке на нашей машине (хосте)
+  # В конфигурации mongod укажем папку /storage/mongo для хранения данных!
+  #config.vm.synced_folder "../data", "/storage", {:mount_options => ['dmode=777','fmode=777']}
+  config.vm.synced_folder "../data", "/storage", type: "rsync"
+
+  # Настраиваем провизион. Ставим все что нужно и конфигуряем
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get install -y curl nano
+    curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+    apt-get install -y nodejs build-essential
+    apt-get install -y mongodb
+
+    /etc/init.d/mongodb stop
+    mv /etc/mongodb.conf /etc/mongodb.conf.bak
+    cp /vagrant/mongodb.conf /etc/mongodb.conf
+
+    mkdir /storage/mongodb
+
+    # TODO права не применяются почему-то
+    # TODO надо как-то по другому, может быть из настроек synced_folder
+    chown -R mongodb:mongodb /storage
+    /etc/init.d/mongodb start
+
+    cd /vagrant
+    npm install -g nodemon
+    node bin/www &
+
+  SHELL
+end

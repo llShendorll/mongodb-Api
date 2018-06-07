@@ -1,2 +1,6 @@
-.idea
-node_modules
+.idea/
+app/node_modules
+app/.vagrant
+data/
+!/data/readme.txt
+!/data/logs/readme.txt
