@@ -58,6 +58,9 @@ module.exports.getPackage = (req, res) => {
 module.exports.addPackages = (req, res) => {
 
     MongoClient.connect(url, (err, client) => {
+
+        err && res.send(err) && console.log(err);
+
         let db = client.db(dbName);
 
         db.collection(docName).insert(req.body, (err, result) => {
